@@ -1,0 +1,35 @@
+- name: Deploy hardened nginx container
+  hosts: localhost
+  become: yes
+  vars_files:
+    - ../vault/vault.yml
+
+  tasks:
+    - name: Remove old container if it exists
+      docker_container:
+        name: nginx_ansible
+        state: absent
+
+    - name: Run hardened nginx container
+      docker_container:
+        name: nginx_ansible
+        image: nginx
+        state: started
+        published_ports:
+          - "{{ nginx_port }}:80"
+        read_only: true
+        cap_drop:
+          - ALL
+        user: "101:101"
+        entrypoint: /bin/sh
+        command: >
+          -c "mkdir -p /var/cache/nginx/client_temp &&
+               mkdir -p /var/log/nginx &&
+               touch /var/log/nginx/error.log &&
+               exec /docker-entrypoint.sh nginx -g 'daemon off;'"
+        tmpfs:
+          - /tmp
+          - /var/run:uid=101,gid=101
+          - /run:uid=101,gid=101
+          - /var/log/nginx:uid=101,gid=101
+          - /var/cache/nginx:uid=101,gid=101
