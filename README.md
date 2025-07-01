@@ -53,3 +53,31 @@ What it does is that it
 7. Confirm if Nginx is running:
     curl http://localhost:8081
 8. You should see the default Nginx welcome page.
+
+
+
+
+# Hardened Nginx Docker Deployment using Terraform
+
+This project sets up a secure, hardened Nginx web server inside a Docker container using Terraform.
+
+What this does is that it
+- Runs Nginx in a container with security best practices:
+  - Read-only filesystem
+  - All Linux capabilities dropped
+  - Only specific writable paths (using tmpfs)
+  - Runs as a non-root user (UID 101)
+- Uses Terraform to automate the entire setup
+
+# How to run it
+
+1. Make sure Docker and Terraform are installed on your machine.
+2. Navigate to the project directory:
+    cd ~/devops-project/terraform/configs
+3. Initialize Terraform:
+    terraform init
+4. Apply the Terraform configuration:
+    terraform apply -auto-approve
+5. Check if Nginx is running:
+    curl http://localhost:8082
+6. You should see the default Nginx welcome page.
