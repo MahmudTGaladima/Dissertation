@@ -1,0 +1,25 @@
+- name: Deploy httpd container with Ansible
+  hosts: localhost
+  become: true
+
+  tasks:
+    - name: Pull httpd image
+      community.docker.docker_image:
+        name: httpd:alpine
+        source: pull
+
+    - name: Run httpd container
+      community.docker.docker_container:
+        name: httpd_ansible
+        image: httpd:alpine
+        state: started
+        ports:
+          - "8081:80"
+        read_only: yes
+        cap_drop:
+          - ALL
+        tmpfs:
+          - /run
+          - /var/cache
+          - /tmp
+          - /usr/local/apache2/logs
