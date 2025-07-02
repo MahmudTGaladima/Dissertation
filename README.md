@@ -84,15 +84,17 @@ What this does is that it
 
 
 # App 2: Hardened httpd (Apache) Deployment
+
+## Hardened httpd Docker Deployment using Ansible
 This sets up a secure, hardened Apache web server inside a Docker container using Ansible.
 
-What it does
+### What it does
     Runs an Apache httpd container with:
       Read-only filesystem
       cap_drop=ALL
     Automates deployment with Ansible
 
-How to run it
+### How to run it
 
 1. Make sure Docker, Python 3, and Ansible are installed.
 2. Navigate to the Ansible directory
@@ -108,3 +110,30 @@ How to run it
 6. Confirm httpd is running -
     curl http://localhost:8081
 7. You should see the It works! page
+
+
+
+## Hardened httpd Deployment with Terraform
+
+This sets up a secure, hardened Apache web server inside a Docker container using Terraform.
+
+What it does:
+- Pulls and runs the httpd:alpine image in a Docker container
+- Enforces hardened settings:
+    Read-only filesystem
+    Dropped Linux capabilities (cap_drop=ALL)
+    tmpfs mounts for writable paths
+- Automates the deployment with Terraform
+
+How to run it:
+
+1. Make sure Docker and Terraform are installed.
+2. Navigate to the Terraform directory:
+    cd ~/Dissertation/app2_httpd/terraform
+3. Initialize Terraform:
+    terraform init
+4. Apply the configuration:
+    terraform apply -auto-approve
+5. Confirm httpd is running:
+    curl http://localhost:8082
+6. You should see the Apache It works! page.
