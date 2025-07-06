@@ -89,9 +89,10 @@ What this does is that it
 This sets up a secure, hardened Apache web server inside a Docker container using Ansible.
 
 ### What it does
+
     Runs an Apache httpd container with:
-      Read-only filesystem
-      cap_drop=ALL
+    -Read-only filesystem
+    -cap_drop=ALL
     Automates deployment with Ansible
 
 ### How to run it
