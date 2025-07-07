@@ -219,3 +219,29 @@ This sets up a secure, hardened Alpine container inside Docker using Ansible.
         docker ps
         docker exec -it alpine_ansible curl https://example.com
     6. You will see the Example Domain HTML.
+
+        
+
+## Hardened Alpine Deployment with Puppet
+This sets up a secure, hardened Alpine Linux container in Docker using Puppet.
+
+### What it does:
+    1. Pulls the alpine image and runs it in a Docker container
+    2. Installs curl inside the container
+    3. Enforces hardening settings:
+        no-new-privileges
+        ipc=none
+    4. Automates deployment with Puppet
+
+### How torun it:
+
+    1. Make sure Docker and Puppet are installed.
+    2. Navigate to the Puppet manifests directory:
+cd ~/Dissertation/app3_alpine/puppet/manifest
+    3. Apply the Puppet manifest:
+sudo puppet apply deploy_alpine.pp
+    4. Confirm the Alpine container is running:
+docker ps
+    5. Test that curl works inside the container:
+docker exec -it alpine_puppet curl https://example.com
+    6.You should see the example.com HTML page in the output.
