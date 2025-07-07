@@ -90,10 +90,10 @@ This sets up a secure, hardened Apache web server inside a Docker container usin
 
 ### What it does
 
-    Runs an Apache httpd container with:
+Runs an Apache httpd container with:
     -Read-only filesystem
     -cap_drop=ALL
-    Automates deployment with Ansible
+Automates deployment with Ansible
 
 ### How to run it
 
@@ -118,7 +118,7 @@ This sets up a secure, hardened Apache web server inside a Docker container usin
 
 This sets up a secure, hardened Apache web server inside a Docker container using Terraform.
 
-What it does:
+### What it does:
 - Pulls and runs the httpd:alpine image in a Docker container
 - Enforces hardened settings:
     Read-only filesystem
@@ -126,7 +126,7 @@ What it does:
     tmpfs mounts for writable paths
 - Automates the deployment with Terraform
 
-How to run it:
+### How to run it:
 
 1. Make sure Docker and Terraform are installed.
 2. Navigate to the Terraform directory:
@@ -138,3 +138,26 @@ How to run it:
 5. Confirm httpd is running:
     curl http://localhost:8082
 6. You should see the Apache It works! page.
+
+
+## Hardened httpd Deployment with Puppet
+This sets up a secure hardened Apache web server inside a Docker container using Puppet.
+
+### What it does:
+  -  It pulls and runs the httpd:alpine image in a Docker container
+  -  Enforces hardened settings:
+    - Read-only filesystem
+    - Dropped Linux capabilities (cap_drop=ALL)
+    - tmpfs mounts for required writable paths
+  -  Automates the deployment with Puppet
+
+### How to run it:
+
+   1. Make sure Docker and Puppet are installed.
+   2. Navigate to the Puppet directory:
+cd ~/Dissertation/app2_httpd/puppet
+   3. Apply the Puppet manifest:
+sudo puppet apply manifests/deploy_httpd.pp
+  4. Confirm httpd is running:
+curl http://localhost:8083
+  5. You should see the Apache It works! page.
