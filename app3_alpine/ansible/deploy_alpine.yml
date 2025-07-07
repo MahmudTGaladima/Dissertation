@@ -1,0 +1,21 @@
+- name: Deploy Alpine container with curl
+  hosts: localhost
+  connection: local
+  tasks:
+
+    - name: Pull Alpine image
+      community.docker.docker_image:
+        name: alpine
+        source: pull
+
+    - name: Run Alpine container with curl and hardening
+      community.docker.docker_container:
+        name: alpine_ansible
+        image: alpine
+        command: ["sh", "-c", "apk update && apk add curl && sleep 3600"]
+        state: started
+        restart_policy: unless-stopped
+        security_opts:
+          - no-new-privileges
+        ipc_mode: none
+        privileged: no
