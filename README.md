@@ -237,11 +237,11 @@ This sets up a secure, hardened Alpine Linux container in Docker using Puppet.
 
     1. Make sure Docker and Puppet are installed.
     2. Navigate to the Puppet manifests directory:
-cd ~/Dissertation/app3_alpine/puppet/manifest
+          cd ~/Dissertation/app3_alpine/puppet/manifest
     3. Apply the Puppet manifest:
-sudo puppet apply deploy_alpine.pp
+          sudo puppet apply deploy_alpine.pp
     4. Confirm the Alpine container is running:
-docker ps
+          docker ps
     5. Test that curl works inside the container:
-docker exec -it alpine_puppet curl https://example.com
+          docker exec -it alpine_puppet curl https://example.com
     6.You should see the example.com HTML page in the output.
