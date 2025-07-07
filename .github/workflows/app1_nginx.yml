@@ -23,7 +23,7 @@ jobs:
 
       - name: Apply Puppet manifest
         run: |
-          cd app1_nginx/puppet
+          cd app1_nginx/puppet/manifests
           sudo puppet apply nginx.pp
       - name: Run Trivy Scan
         run: |
