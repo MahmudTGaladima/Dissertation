@@ -1,0 +1,79 @@
+name: App 1 - Nginx Deployment CI
+
+on:
+  push:
+    paths:
+      - 'app1_nginx/**'
+  workflow_dispatch:
+
+jobs:
+  puppet_nginx:
+    name: Deploy Nginx using Puppet
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+
+      - name: Install Puppet
+        run: |
+          sudo apt update
+          sudo apt install -y puppet
+
+      - name: Apply Puppet manifest
+        run: |
+          cd app1_nginx/puppet
+          sudo puppet apply nginx.pp
+      - name: Run Trivy Scan
+        run: |
+          sudo apt install -y wget apt-transport-https gnupg lsb-release
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+          echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+          sudo apt update
+          sudo apt install -y trivy
+          trivy image nginx
+  ansible_nginx:
+    name: Deploy Nginx using Ansible
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Install Ansible and Docker
+        run: |
+          sudo apt update
+          sudo apt install -y ansible docker.io
+          sudo systemctl start docker
+
+      - name: Run Ansible playbook
+        run: |
+          cd app1_nginx/ansible
+          ansible-playbook nginx.yml -i "localhost," -c local
+
+      - name: Run Trivy Scan
+        run: trivy image nginx
+
+  terraform_nginx:
+    name: Deploy Nginx using Terraform
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Install Terraform and Docker
+        run: |
+          sudo apt update
+          sudo apt install -y docker.io unzip curl
+          curl -fsSL https://releases.hashicorp.com/terraform/1.8.5/terraform_1.8.5_linux_amd64.zip -o terraform.zip
+          unzip terraform.zip
+          sudo mv terraform /usr/local/bin/
+          terraform -install-autocomplete
+
+      - name: Apply Terraform configuration
+        run: |
+          cd app1_nginx/terraform
+          terraform init
+          terraform apply -auto-approve
+      - name: Run Trivy Scan
+        run: trivy image nginx
