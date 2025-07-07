@@ -24,7 +24,7 @@ jobs:
       - name: Apply Puppet manifest
         run: |
           cd app1_nginx/puppet/manifests
-          sudo puppet apply nginx_hardened.pp
+          sudo puppet apply manifests/nginx_hardened.pp --hiera_config=hiera/hiera.yaml
       - name: Run Trivy Scan
         run: |
           sudo apt install -y wget apt-transport-https gnupg lsb-release
