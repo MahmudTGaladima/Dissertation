@@ -45,11 +45,13 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Install Ansible and Start Docker
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+
+      - name: Install Ansible
         run: |
           sudo apt update
           sudo apt install -y ansible
-          sudo systemctl start docker
 
 
       - name: Run Ansible playbook
@@ -68,7 +70,10 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Install Terraform and Start Docker
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+        
+      - name: Install Terraform
         run: |
           sudo apt update
           sudo apt install -y unzip curl
