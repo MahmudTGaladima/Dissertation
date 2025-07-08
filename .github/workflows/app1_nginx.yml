@@ -51,6 +51,7 @@ jobs:
         sudo apt install -y ansible docker.io
         sudo systemctl start docker
 
+
       - name: Run Ansible playbook
         run: |
         cd app1_nginx/ansible
