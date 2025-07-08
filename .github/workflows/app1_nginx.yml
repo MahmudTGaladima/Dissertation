@@ -45,10 +45,10 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Install Ansible and Docker
+      - name: Install Ansible and Start Docker
         run: |
         sudo apt update
-        sudo apt install -y ansible docker.io
+        sudo apt install -y ansible
         sudo systemctl start docker
 
 
@@ -68,14 +68,15 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Install Terraform and Docker
+      - name: Install Terraform and Start Docker
         run: |
           sudo apt update
-          sudo apt install -y docker.io unzip curl
+          sudo apt install -y unzip curl
           curl -fsSL https://releases.hashicorp.com/terraform/1.8.5/terraform_1.8.5_linux_amd64.zip -o terraform.zip
           unzip terraform.zip
           sudo mv terraform /usr/local/bin/
           terraform -install-autocomplete
+          sudo systemctl start docker
 
       - name: Apply Terraform configuration
         run: |
