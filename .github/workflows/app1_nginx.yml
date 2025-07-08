@@ -57,7 +57,7 @@ jobs:
       - name: Run Ansible playbook
         run: |
          cd app1_nginx/ansible
-         ansible-playbook nginx.yml -i "localhost," -c local
+         ansible-playbook nginx-hardened.yml -i "localhost," -c local
 
       - name: Run Trivy Scan
         run: trivy image nginx
