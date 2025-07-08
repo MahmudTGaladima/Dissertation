@@ -85,7 +85,7 @@ jobs:
 
       - name: Apply Terraform configuration
         run: |
-          cd app1_nginx/terraform
+          cd app1_nginx/terraform/configs/
           terraform init
           terraform apply -auto-approve
 
