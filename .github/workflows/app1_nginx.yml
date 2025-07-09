@@ -62,7 +62,7 @@ jobs:
       - name: Run Ansible playbook
         run: |
          cd app1_nginx/ansible/playbooks
-         ansible-playbook nginx-hardened.yml -i "localhost," -c local
+         ansible-playbook nginx-hardened.yml -i "localhost," -c local --vault-password-file ./vault-password.txt
 
       - name: Run Trivy Scan
         run: trivy image nginx
