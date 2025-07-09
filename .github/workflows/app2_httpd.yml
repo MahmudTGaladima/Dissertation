@@ -25,7 +25,7 @@ jobs:
       - name: Apply Puppet manifest
         run: |
           cd app2_httpd/puppet/manifests
-          sudo puppet apply httpd_hardened.pp --hiera_config=../hiera/hiera.yaml
+          sudo puppet apply deploy_httpd.pp --hiera_config=../hiera/hiera.yaml
 
       - name: Install Trivy
         run: |
@@ -66,8 +66,8 @@ jobs:
 
       - name: Run Ansible playbook
         run: |
-          cd app2_httpd/ansible/playbooks
-          ansible-playbook httpd-hardened.yml -i "localhost," -c local --vault-password-file $GITHUB_WORKSPACE/vault-password.txt
+          cd app2_httpd/ansible
+          ansible-playbook deploy_httpd.yml -i "localhost," -c local --vault-password-file $GITHUB_WORKSPACE/vault-password.txt
 
       - name: Run Trivy Scan
         run: trivy image httpd
@@ -102,7 +102,7 @@ jobs:
 
       - name: Apply Terraform configurations
         run: |
-          cd app2_httpd/terraform/configs
+          cd app2_httpd/terraform
           terraform init
           terraform apply -auto-approve
 
