@@ -1,0 +1,110 @@
+name: App 2 - HTTPD Deployment CI
+
+on:
+  push:
+    paths:
+      - 'app2_httpd/**'
+  workflow_dispatch:
+
+jobs:
+  puppet_httpd:
+    name: Deploy HTTPD using Puppet
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+
+      - name: Install Puppet
+        run: |
+          sudo apt update
+          sudo apt install -y puppet
+
+      - name: Apply Puppet manifest
+        run: |
+          cd app2_httpd/puppet/manifests
+          sudo puppet apply httpd_hardened.pp --hiera_config=../hiera/hiera.yaml
+
+      - name: Install Trivy
+        run: |
+          sudo apt install -y wget apt-transport-https gnupg lsb-release
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+          echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/trivy.list
+          sudo apt update
+          sudo apt install -y trivy
+
+      - name: Run Trivy Scan
+        run: trivy image httpd
+
+  ansible_httpd:
+    name: Deploy HTTPD using Ansible
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+
+      - name: Install Ansible
+        run: |
+          sudo apt update
+          sudo apt install -y ansible
+
+      - name: Install Trivy
+        run: |
+          sudo apt install -y wget apt-transport-https gnupg lsb-release
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+          echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/trivy.list
+          sudo apt update
+          sudo apt install -y trivy
+
+      - name: Set Vault password from GitHub secrets
+        run: echo "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" > $GITHUB_WORKSPACE/vault-password.txt
+
+      - name: Run Ansible playbook
+        run: |
+          cd app2_httpd/ansible/playbooks
+          ansible-playbook httpd-hardened.yml -i "localhost," -c local --vault-password-file $GITHUB_WORKSPACE/vault-password.txt
+
+      - name: Run Trivy Scan
+        run: trivy image httpd
+
+  terraform_httpd:
+    name: Deploy HTTPD using Terraform
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+
+      - name: Install Terraform
+        run: |
+          sudo apt update
+          sudo apt install -y unzip curl
+          curl -fsSL https://releases.hashicorp.com/terraform/1.8.5/terraform_1.8.5_linux_amd64.zip -o terraform.zip
+          unzip terraform.zip
+          sudo mv terraform /usr/local/bin/
+          terraform -install-autocomplete
+          sudo systemctl start docker
+
+      - name: Install Trivy
+        run: |
+          sudo apt install -y wget apt-transport-https gnupg lsb-release
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+          echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/trivy.list
+          sudo apt update
+          sudo apt install -y trivy
+
+      - name: Apply Terraform configurations
+        run: |
+          cd app2_httpd/terraform/configs
+          terraform init
+          terraform apply -auto-approve
+
+      - name: Run Trivy Scan
+        run: trivy image httpd
