@@ -54,6 +54,11 @@ jobs:
           sudo apt install -y ansible
 
 
+
+      - name: Set Vault password from GitHub secrets
+        run: echo "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" > vault-password.txt
+
+
       - name: Run Ansible playbook
         run: |
          cd app1_nginx/ansible/playbooks
