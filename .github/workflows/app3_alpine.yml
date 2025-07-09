@@ -61,7 +61,7 @@ jobs:
 
       - name: Apply Puppet manifest
         run: |
-          cd app3_alpine/puppet/manifests
+          cd app3_alpine/puppet/manifest
           sudo puppet apply deploy_alpine.pp --hiera_config=../hiera/hiera.yaml
 
       - name: Install Trivy
