@@ -7,36 +7,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  puppet_httpd:
-    name: Deploy HTTPD using Puppet
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v2
-
-      - name: Install Puppet
-        run: |
-          sudo apt update
-          sudo apt install -y puppet
-
-      - name: Apply Puppet manifest
-        run: |
-          cd app2_httpd/puppet/manifests
-          sudo puppet apply deploy_httpd.pp --hiera_config=../hiera/hiera.yaml
-
-      - name: Install Trivy
-        run: |
-          sudo apt install -y wget apt-transport-https gnupg lsb-release
-          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
-          echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/trivy.list
-          sudo apt update
-          sudo apt install -y trivy
-
-      - name: Run Trivy Scan
-        run: trivy image httpd
 
   ansible_httpd:
     name: Deploy HTTPD using Ansible
@@ -108,3 +78,38 @@ jobs:
 
       - name: Run Trivy Scan
         run: trivy image httpd
+
+
+
+  puppet_httpd:
+    name: Deploy HTTPD using Puppet
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+
+      - name: Install Puppet
+        run: |
+          sudo apt update
+          sudo apt install -y puppet
+
+      - name: Apply Puppet manifest
+        run: |
+          cd app2_httpd/puppet/manifests
+          sudo puppet apply deploy_httpd.pp --hiera_config=../hiera/hiera.yaml
+
+      - name: Install Trivy
+        run: |
+          sudo apt install -y wget apt-transport-https gnupg lsb-release
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+          echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/trivy.list
+          sudo apt update
+          sudo apt install -y trivy
+
+      - name: Run Trivy Scan
+        run: trivy image httpd
+
+  
