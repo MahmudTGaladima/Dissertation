@@ -56,7 +56,7 @@ jobs:
 
       - name: Run Ansible playbook
         run: |
-         cd Dissertation/app1_nginx/ansible
+         cd app1_nginx/ansible/playbooks
          ansible-playbook nginx-hardened.yml -i "localhost," -c local
 
       - name: Run Trivy Scan
@@ -72,7 +72,7 @@ jobs:
 
       - name: Set up Docker
         uses: docker/setup-buildx-action@v2
-        
+
       - name: Install Terraform
         run: |
           sudo apt update
@@ -93,7 +93,7 @@ jobs:
 
       - name: Apply Terraform configuration
         run: |
-          cd Dissertation/app1_nginx/terraform/configs
+          cd app1_nginx/terraform/configs
           terraform init
           terraform apply -auto-approve
 
